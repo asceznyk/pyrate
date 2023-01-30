@@ -1,0 +1,23 @@
+{
+  "name": "pyrate",
+  "version": "1.0.0",
+  "description": "a python3 code editor",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asceznyk/pyrate.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/asceznyk/pyrate/issues"
+  },
+  "homepage": "https://github.com/asceznyk/pyrate#readme",
+  "dependencies": {
+    "@lezer/python": "^1.1.1",
+    "express": "^4.18.2"
+  }
+}

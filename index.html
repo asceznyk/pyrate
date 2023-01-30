@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Pyrate: A python code editor on the web</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="header">
+        <h1>Pyrate: A python code editor on the web</h1>
+      </div>
+      <div class="container">
+        <div class="pyrate-default" translate="no">
+          <div style="overflow: hidden; position: relative; width: 3px; height: 0px;">
+            <textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position:absolute; padding:0px; height:1em; width:1000px; min-height:1em; outline:none;" id="capture"></textarea>
+          </div>
+          <div class="pyrate-scroll" role="presentation">
+            <div class="pyrate-cursors">
+              <div class="pyrate-cursor" id="cursor"></div>
+            </div>
+            <div class="pyrate-code" id="code">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="bundle.js"></script>
+  </body>
+</html>
+
+
