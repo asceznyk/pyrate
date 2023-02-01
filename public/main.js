@@ -33,12 +33,9 @@ function updateCode() {
     let matches = [...value.matchAll(/\n/g)];
     let cy = matches.length;
 
-    let cx = 0;
-    if(matches.length > 0) {
-      let midx = matches[matches.length-1].index;
-      cx = value.slice(midx, value.length).replace('\n', '').length; 
-    } else {
-      cx = value.length;
+    let cx = value.length;
+    if(cy > 0) { 
+      cx = value.slice(matches[cy-1].index, value.length).replace('\n', '').length; 
     }
 
     cursor.style.top = parseInt(cy*vscl) + "px";
