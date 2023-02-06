@@ -1,4 +1,4 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.XXX = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -3804,7 +3804,11 @@ var Rec;
     // on recursive traversal.
     Rec[Rec["CutDepth"] = 15000] = "CutDepth";
     Rec[Rec["CutTo"] = 9000] = "CutTo";
-    Rec[Rec["MaxLeftAssociativeReductionCount"] = 1000] = "MaxLeftAssociativeReductionCount";
+    Rec[Rec["MaxLeftAssociativeReductionCount"] = 300] = "MaxLeftAssociativeReductionCount";
+    // The maximum number of non-recovering stacks to explore (to avoid
+    // getting bogged down with exponentially multiplying stacks in
+    // ambiguous content)
+    Rec[Rec["MaxStackCount"] = 12] = "MaxStackCount";
 })(Rec || (Rec = {}));
 class Parse {
     constructor(parser, input, fragments, ranges) {
@@ -3848,7 +3852,7 @@ class Parse {
         // straightforward, cheap way to check for this happening, due to
         // the history of reductions only being available in an
         // expensive-to-access format in the stack buffers.)
-        if (this.bigReductionCount > 1000 /* Rec.MaxLeftAssociativeReductionCount */ && stacks.length == 1) {
+        if (this.bigReductionCount > 300 /* Rec.MaxLeftAssociativeReductionCount */ && stacks.length == 1) {
             let [s] = stacks;
             while (s.forceReduce() && s.stack.length && s.stack[s.stack.length - 2] >= this.lastBigReductionStart) { }
             this.bigReductionCount = this.lastBigReductionSize = 0;
@@ -3926,6 +3930,8 @@ class Parse {
                     }
                 }
             }
+            if (newStacks.length > 12 /* Rec.MaxStackCount */)
+                newStacks.splice(12 /* Rec.MaxStackCount */, newStacks.length - 12 /* Rec.MaxStackCount */);
         }
         this.minStackPos = newStacks[0].pos;
         for (let i = 1; i < newStacks.length; i++)
@@ -4578,74 +4584,93 @@ exports.parser = parser;
 },{"@lezer/highlight":3,"@lezer/lr":4}],6:[function(require,module,exports){
 const python = require('@lezer/python');
 const common = require('@lezer/common');
-
 const parser = python.parser;
-const TreeCursor = common.TreeCursor;
 
-/*
- * {
- *	'def': 'FunctionDefinition'
- * }
- *
- * {
- *	'FunctionDefinition': '#abc'
- * }
-*/
-
-let tb = parser.parse(`
-	def main(s):
-		print(f"this is {s}!")
-`)
-
-let tc = tb.cursor()
-while(tc.next()) {
-	console.log(tc.node.type.name)
-}
-
-
-
-
-
-},{"@lezer/common":2,"@lezer/python":5}],7:[function(require,module,exports){
 const code = document.querySelector("#code");
 const capture = document.querySelector("#capture");
 const cursor = document.querySelector("#cursor");
 
-function updateCode() {
-  const hscl = 7.83;
-  const vscl = 16;
+const hscl = 7.83;
+const vscl = 16;
 
-  function highlightSyntax() {
-    code.innerHTML = '';
-    let value = capture.value;
-    let lines = value.split('\n');
-
-    for (let i = 0; i < lines.length; i++) {
-      let lineDiv = document.createElement("div");
-      lineDiv.style = `position:relative; height:${vscl}px;`;
-      code.appendChild(lineDiv);
-
-      let texts = lines[i].split(' ')
-      let currentTag = "";
-      for(let j = 0; j < texts.length; j++) {
-        currentTag += `<span>${texts[j]}</span>`;
-        if(j != texts.length-1) {
-          currentTag += `&nbsp;`;
-        }
-      }
-      lineDiv.innerHTML = currentTag; 
+function isAlphaNumeric(str) {
+  let code, i, len;
+  for (i = 0, len = str.length; i < len; i++) {
+    code = str.charCodeAt(i);
+    if (!(code > 47 && code < 58) && // numeric (0-9)
+        !(code > 64 && code < 91) && // upper alpha (A-Z)
+        !(code > 96 && code < 123)) { // lower alpha (a-z)
+      return false;
     }
   }
+  return true;
+};
 
+function highlightSyntax(program) {
+	function createLine() {
+		let lDiv = document.createElement("div");
+		lDiv.style = `position:relative; height:${vscl}px;`;
+		code.appendChild(lDiv);
+		return lDiv;
+	}
+
+	function fillWhiteSpace(from, to) {
+		for(let l = from; l < to; l++) { 
+			if(program[l] == '\n') lineDiv = createLine();
+			else if (program[l] == ' ')  lineDiv.innerHTML += '&nbsp';
+		}
+	}
+
+  function getKWType() {
+    value = program.slice(treeCursor.from, treeCursor.to)
+    cls = treeCursor.name.toLowerCase();
+
+    console.log(treeCursor.from, treeCursor.to);
+
+    if(cls == value && isAlphaNumeric(value)) cls = "keyword";
+    if(cls.endsWith("op")) cls = "operator";
+    if( 
+      treeCursor.node._parent != null &&
+      treeCursor.node._parent.type.name == 'FunctionDefinition' && 
+      treeCursor.name == 'VariableName'
+    ) 
+      cls = "def";
+
+    return [cls, value];
+  }
+
+	code.innerHTML = ''; 
+	let treeCursor = parser.parse(program).cursor();
+  let lineDiv;
+	let prevPoint = 0;
+  let cls, value;
+
+	lineDiv = createLine();
+	while(treeCursor.next()) {
+		if(treeCursor.node.firstChild != null) continue
+
+		fillWhiteSpace(prevPoint, treeCursor.from);
+
+		let kwSpan = document.createElement("span");
+
+    [cls, value] = getKWType();
+    kwSpan.innerHTML = value;
+		kwSpan.classList.add(`py-${cls}`)
+		lineDiv.appendChild(kwSpan);
+
+		prevPoint = treeCursor.to;
+	}
+}
+
+function updateCode() {
   function followCursor() {
     let value = capture.value.slice(0, capture.selectionStart); 
     let matches = [...value.matchAll(/\n/g)];
     let cy = matches.length;
 
     let cx = value.length;
-    if(cy > 0) {
-      let midx = matches[cy-1].index;
-      cx = value.slice(midx, value.length).replace('\n', '').length; 
+    if(cy > 0) { 
+      cx = value.slice(matches[cy-1].index, value.length).replace('\n', '').length; 
     }
 
     cursor.style.top = parseInt(cy*vscl) + "px";
@@ -4676,7 +4701,7 @@ function updateCode() {
   capture.addEventListener("keyup", (e) => {
     let keycode = e.keyCode;
     if(validateKey(keycode)) {
-      if(!arrow(keycode)) highlightSyntax(); 
+      if(!arrow(keycode)) highlightSyntax(capture.value); 
     }
     followCursor();
   })
@@ -4693,7 +4718,6 @@ function updateCode() {
           tabStr + e.target.value.substring(end);
         e.target.selectionStart = e.target.selectionEnd = start + tabStr.length;
       }
-      if(!arrow(keycode)) highlightSyntax();
       followCursor();
     }
   })
@@ -4704,5 +4728,8 @@ updateCode();
 
 
 
-},{}]},{},[7,6])(7)
-});
+
+
+
+
+},{"@lezer/common":2,"@lezer/python":5}]},{},[6]);

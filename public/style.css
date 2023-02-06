@@ -3,7 +3,7 @@ html, body {
 	font-family:monospace;
 	font-size:13px;
 	background: #001219;
-	color: #94D2BD;
+	color: #FFF;
 }
 
 textarea, pre {
@@ -75,6 +75,26 @@ textarea, pre {
 
 .header>h1 {
 	margin:0px;
+}
+
+.py-keyword {
+	color:#0A9396;
+}
+
+.py-string {
+	color:#EE9B00;
+}
+
+.py-number {
+	color:#005F73;
+}
+
+.py-operator, .py-def {
+	color:#057985;
+}
+
+.py-propertyname { 
+	color:#CA6702;
 }
 
 @keyframes blinker {  
