@@ -82,7 +82,7 @@ textarea, pre {
 }
 
 .py-string {
-	color:#EE9B00;
+	color:#E9D8A6;
 }
 
 .py-number {
@@ -94,7 +94,7 @@ textarea, pre {
 }
 
 .py-propertyname { 
-	color:#CA6702;
+	color:#94D2BD;
 }
 
 @keyframes blinker {  

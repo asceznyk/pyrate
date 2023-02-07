@@ -4625,9 +4625,11 @@ function highlightSyntax(program) {
     value = program.slice(treeCursor.from, treeCursor.to)
     cls = treeCursor.name.toLowerCase();
 
-    console.log(treeCursor.from, treeCursor.to);
+    if(cls == value) {
+      if(isAlphaNumeric(value)) cls = "keyword";
+      else cls = "seperator";
+    }
 
-    if(cls == value && isAlphaNumeric(value)) cls = "keyword";
     if(cls.endsWith("op")) cls = "operator";
     if( 
       treeCursor.node._parent != null &&
