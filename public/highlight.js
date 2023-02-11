@@ -14,8 +14,8 @@ function isAlphaNumeric(str) {
   for (i = 0, len = str.length; i < len; i++) {
     code = str.charCodeAt(i);
     if (!(code > 47 && code < 58) && // numeric (0-9)
-        !(code > 64 && code < 91) && // upper alpha (A-Z)
-        !(code > 96 && code < 123)) { // lower alpha (a-z)
+      !(code > 64 && code < 91) && // upper alpha (A-Z)
+      !(code > 96 && code < 123)) { // lower alpha (a-z)
       return false;
     }
   }
@@ -23,19 +23,19 @@ function isAlphaNumeric(str) {
 };
 
 function highlightSyntax(program) {
-	function createLine() {
-		let lDiv = document.createElement("div");
+  function createLine() {
+    let lDiv = document.createElement("div");
     lDiv.style = `position:relative; height:${vscl}px;`;
-		code.appendChild(lDiv);
-		return lDiv;
-	}
+    code.appendChild(lDiv);
+    return lDiv;
+  }
 
-	function fillWhiteSpace(from, to) {
-		for(let i = from; i < to; i++) { 
-			if(program[i] == '\n') lineDiv = createLine();
-			else if (program[i] == ' ')  lineDiv.innerHTML += '&nbsp';
-		}
-	}
+  function fillWhiteSpace(from, to) {
+    for(let i = from; i < to; i++) { 
+      if(program[i] == '\n') lineDiv = createLine();
+      else if (program[i] == ' ')  lineDiv.innerHTML += '&nbsp';
+    }
+  }
 
   function getKWType(node, name, value) {
     cls = name.toLowerCase();
@@ -75,19 +75,19 @@ function highlightSyntax(program) {
     lineDiv.appendChild(kwSpan); 
   }
 
-	code.innerHTML = ''; 
-	let treeCursor = parser.parse(program).cursor();
+  code.innerHTML = ''; 
+  let treeCursor = parser.parse(program).cursor();
   let lineDiv;
-	let prevPoint = 0;
+  let prevPoint = 0;
   let cls, value;
 
-	lineDiv = createLine();
-	while(treeCursor.next()) {
-		if(treeCursor.node.firstChild != null) continue
-		fillWhiteSpace(prevPoint, treeCursor.from);
+  lineDiv = createLine();
+  while(treeCursor.next()) {
+    if(treeCursor.node.firstChild != null) continue
+    fillWhiteSpace(prevPoint, treeCursor.from);
     fillNodeColor();
-		prevPoint = treeCursor.to;
-	}
+    prevPoint = treeCursor.to;
+  }
 }
 
 function updateCode() {
@@ -111,13 +111,13 @@ function updateCode() {
 
   function validateKey(keycode) {
     let valid = 
-          (keycode > 47 && keycode < 58) || // number keys
-          (keycode == 32 || keycode == 13 || keycode == 8 || keycode == 9) ||
-          arrow(keycode) ||
-          (keycode > 64 && keycode < 91) || // letter keys
-          (keycode > 95 && keycode < 112) || // numpad keys
-          (keycode > 185 && keycode < 193) || // ;=,-./` (in order)
-          (keycode > 218 && keycode < 223);   // [\]' (in order)
+      (keycode > 47 && keycode < 58) || // number keys
+      (keycode == 32 || keycode == 13 || keycode == 8 || keycode == 9) ||
+      arrow(keycode) ||
+      (keycode > 64 && keycode < 91) || // letter keys
+      (keycode > 95 && keycode < 112) || // numpad keys
+      (keycode > 185 && keycode < 193) || // ;=,-./` (in order)
+      (keycode > 218 && keycode < 223);   // [\]' (in order)
     return valid;
   }
 
