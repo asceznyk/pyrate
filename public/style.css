@@ -81,7 +81,7 @@ textarea, pre {
 	color:#0A9396;
 }
 
-.py-string {
+.py-string, .py-comment {
 	color:#E9D8A6;
 }
 

@@ -4609,21 +4609,20 @@ function isAlphaNumeric(str) {
 function highlightSyntax(program) {
 	function createLine() {
 		let lDiv = document.createElement("div");
-		lDiv.style = `position:relative; height:${vscl}px;`;
+    lDiv.style = `position:relative; height:${vscl}px;`;
 		code.appendChild(lDiv);
 		return lDiv;
 	}
 
 	function fillWhiteSpace(from, to) {
-		for(let l = from; l < to; l++) { 
-			if(program[l] == '\n') lineDiv = createLine();
-			else if (program[l] == ' ')  lineDiv.innerHTML += '&nbsp';
+		for(let i = from; i < to; i++) { 
+			if(program[i] == '\n') lineDiv = createLine();
+			else if (program[i] == ' ')  lineDiv.innerHTML += '&nbsp';
 		}
 	}
 
-  function getKWType() {
-    value = program.slice(treeCursor.from, treeCursor.to)
-    cls = treeCursor.name.toLowerCase();
+  function getKWType(node, name, value) {
+    cls = name.toLowerCase();
 
     if(cls == value) {
       if(isAlphaNumeric(value)) cls = "keyword";
@@ -4632,13 +4631,32 @@ function highlightSyntax(program) {
 
     if(cls.endsWith("op")) cls = "operator";
     if( 
-      treeCursor.node._parent != null &&
-      treeCursor.node._parent.type.name == 'FunctionDefinition' && 
-      treeCursor.name == 'VariableName'
+      node._parent != null &&
+      node._parent.type.name == 'FunctionDefinition' && 
+      name == 'VariableName'
     ) 
       cls = "def";
 
-    return [cls, value];
+    return cls;
+  }
+
+  function fillNodeColor() { 
+    let [from, to] = [treeCursor.from, treeCursor.to];
+    let cls = getKWType(treeCursor.node, treeCursor.name, program.slice(from, to));
+
+    let kwSpan = document.createElement("span");
+    kwSpan.classList.add(`py-${cls}`);
+    for(let i = from; i < to; i++) {
+      if(program[i] == '\n') {
+        lineDiv.appendChild(kwSpan);
+        kwSpan = document.createElement("span");
+        kwSpan.classList.add(`py-${cls}`);
+        lineDiv = createLine();
+        continue;
+      } 
+      kwSpan.innerHTML += program[i];
+    }
+    lineDiv.appendChild(kwSpan); 
   }
 
 	code.innerHTML = ''; 
@@ -4650,16 +4668,8 @@ function highlightSyntax(program) {
 	lineDiv = createLine();
 	while(treeCursor.next()) {
 		if(treeCursor.node.firstChild != null) continue
-
 		fillWhiteSpace(prevPoint, treeCursor.from);
-
-		let kwSpan = document.createElement("span");
-
-    [cls, value] = getKWType();
-    kwSpan.innerHTML = value;
-		kwSpan.classList.add(`py-${cls}`)
-		lineDiv.appendChild(kwSpan);
-
+    fillNodeColor();
 		prevPoint = treeCursor.to;
 	}
 }
@@ -4726,7 +4736,6 @@ function updateCode() {
 }
 
 updateCode();
-
 
 
 
