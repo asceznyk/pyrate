@@ -24,6 +24,7 @@ function isAlphaNumeric(str) {
 
 function highlightSyntax(program) {
   function createLine() {
+    num++;
     let lDiv = document.createElement("div");
     lDiv.style = `position:relative; height:${vscl}px;`;
     code.appendChild(lDiv);
@@ -80,6 +81,7 @@ function highlightSyntax(program) {
   let lineDiv;
   let prevPoint = 0;
   let cls, value;
+  let num = 0;
 
   lineDiv = createLine();
   while(treeCursor.next()) {
@@ -105,7 +107,7 @@ function updateCode() {
     cursor.style.left = parseInt(cx*hscl) + "px";
   }
 
-  function arrow(keycode) {
+  function isArrow(keycode) {
     return (keycode == 37 || keycode == 38 || keycode == 39 || keycode == 40) 
   }
 
@@ -113,7 +115,7 @@ function updateCode() {
     let valid = 
       (keycode > 47 && keycode < 58) || // number keys
       (keycode == 32 || keycode == 13 || keycode == 8 || keycode == 9) ||
-      arrow(keycode) ||
+      isArrow(keycode) ||
       (keycode > 64 && keycode < 91) || // letter keys
       (keycode > 95 && keycode < 112) || // numpad keys
       (keycode > 185 && keycode < 193) || // ;=,-./` (in order)
@@ -129,7 +131,7 @@ function updateCode() {
   capture.addEventListener("keyup", (e) => {
     let keycode = e.keyCode;
     if(validateKey(keycode)) {
-      if(!arrow(keycode)) highlightSyntax(capture.value); 
+      if(!isArrow(keycode)) highlightSyntax(capture.value); 
     }
     followCursor();
   })

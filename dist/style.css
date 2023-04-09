@@ -97,6 +97,10 @@ textarea, pre {
 	color:#94D2BD;
 }
 
+.line-num {
+	color:#00A1E0;
+}
+
 @keyframes blinker {  
   50% { opacity: 0.2; }
 }

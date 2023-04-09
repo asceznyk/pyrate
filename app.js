@@ -1,18 +1,13 @@
-const express = require('express');
 const path = require('path');
+const express = require('express'),
+    app = express();
 
-const port = 5000;
-const app = express();
-const router = express.Router();
+app.use(express.static(path.join(__dirname, '/dist')));
 
-app.get('/', (req, res) => {
-	res.sendFile(path.join(__dirname+'/index.html'));
+app.get('/', function(req, res){
+  res.sendFile(path.join(__dirname + '/index.html'));
 });
 
-app.use(router);
-app.use(express.static('public'));
-app.listen(port, () => {
-	console.log(`listening at port ${port}`);
-})
+app.listen(3000, () => console.log("listening on port 3000"));
 
 
