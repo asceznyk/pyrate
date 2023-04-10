@@ -4606,13 +4606,14 @@ function isAlphaNumeric(str) {
   return true;
 };
 
-function highlightSyntax(program) {
+function highlightSyntax(program, lineOffset) {
   function createLine() {
-    num++;
+    lineNum++;
     let lDiv = document.createElement("div");
     lDiv.style = `position:relative; height:${vscl}px;`;
-    let numSpan = `<span class='line-num'>${num}</span>&nbsp;`;
-    lDiv.innerHTML = numSpan;
+    let offLine = '';
+    for(let i = 0; i < lineOffset - lineNum.toString().length; i++) offLine += '&nbsp;'
+    lDiv.innerHTML = `<span class='line-num'>${offLine}${lineNum}&nbsp;</span>`;
     code.appendChild(lDiv);
     return lDiv;
   }
@@ -4667,7 +4668,7 @@ function highlightSyntax(program) {
   let lineDiv;
   let prevPoint = 0;
   let cls, value;
-  let num = 0;
+  let lineNum = 0; 
 
   lineDiv = createLine();
   while(treeCursor.next()) {
@@ -4690,7 +4691,7 @@ function updateCode() {
     }
 
     cursor.style.top = parseInt(cy*vscl) + "px";
-    cursor.style.left = parseInt(cx*hscl) + "px";
+    cursor.style.left = parseInt((cx+lineOffset+1) * hscl)  + "px";
   }
 
   function isArrow(keycode) {
@@ -4709,6 +4710,8 @@ function updateCode() {
     return valid;
   }
 
+  let lineOffset;
+
   cursor.style.left = "0px";
   code.addEventListener("click", () => {
     capture.focus();
@@ -4717,7 +4720,11 @@ function updateCode() {
   capture.addEventListener("keyup", (e) => {
     let keycode = e.keyCode;
     if(validateKey(keycode)) {
-      if(!isArrow(keycode)) highlightSyntax(capture.value); 
+      if(!isArrow(keycode)) {
+        let program = capture.value;
+        lineOffset = program.split('\n').length.toString().length + 1;
+        highlightSyntax(program, lineOffset);
+      } 
     }
     followCursor();
   })
