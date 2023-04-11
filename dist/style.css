@@ -34,19 +34,24 @@ textarea, pre {
 	background:inherit;
 	border-radius:3px;
 	transition:all .25s;
-	width:8px;
-	height:8px;
+	width:5px;
 }
 
 .pyrate-scroll::-webkit-scrollbar-thumb {
-	background: #E9D8A6;
+	background: #005F73;
 	border-radius:3px;
 }
 
 .pyrate-scroll>.pyrate-code {
 	min-height:250px;
 	max-height:500px;
-	min-width:max-content;
+	float:left;
+}
+
+.pyrate-scroll>.pyrate-lines {
+	min-height:250px;
+	max-height:500px;
+	float:left;
 }
 
 .pyrate-code {  
@@ -112,5 +117,7 @@ textarea, pre {
 }
 
  
+
+
 
 

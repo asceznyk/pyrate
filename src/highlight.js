@@ -3,6 +3,7 @@ const common = require('@lezer/common');
 const parser = python.parser;
 
 const code = document.querySelector("#code");
+const lines = document.querySelector("#lines");
 const capture = document.querySelector("#capture");
 const cursor = document.querySelector("#cursor");
 
@@ -10,26 +11,22 @@ const hscl = 7.83;
 const vscl = 16;
 
 function isAlphaNumeric(str) {
-  let code, i, len;
+  let ascii, i, len;
   for (i = 0, len = str.length; i < len; i++) {
-    code = str.charCodeAt(i);
-    if (!(code > 47 && code < 58) && // numeric (0-9)
-      !(code > 64 && code < 91) && // upper alpha (A-Z)
-      !(code > 96 && code < 123)) { // lower alpha (a-z)
+    ascii = str.charCodeAt(i);
+    if (!(ascii > 47 && ascii < 58) && // numeric (0-9)
+      !(ascii > 64 && ascii < 91) && // upper alpha (A-Z)
+      !(ascii > 96 && ascii < 123)) { // lower alpha (a-z)
       return false;
     }
   }
   return true;
 };
 
-function highlightSyntax(program, lineOffset) {
+function highlightSyntax(program) {
   function createLine() {
-    lineNum++;
     let lDiv = document.createElement("div");
-    lDiv.style = `position:relative; height:${vscl}px;`;
-    let offLine = '';
-    for(let i = 0; i < lineOffset - lineNum.toString().length; i++) offLine += '&nbsp;'
-    lDiv.innerHTML = `<span class='line-num'>${offLine}${lineNum}&nbsp;</span>`;
+    lDiv.style = `position:relative; height:${vscl}px;`; 
     code.appendChild(lDiv);
     return lDiv;
   }
@@ -84,7 +81,6 @@ function highlightSyntax(program, lineOffset) {
   let lineDiv;
   let prevPoint = 0;
   let cls, value;
-  let lineNum = 0; 
 
   lineDiv = createLine();
   while(treeCursor.next()) {
@@ -126,9 +122,30 @@ function updateCode() {
     return valid;
   }
 
-  let lineOffset;
+  function setLineNums(program) {
+    let numLines = program.split('\n').length;
+    lineOffset = numLines.toString().length + 1;
 
-  cursor.style.left = "0px";
+    lines.innerHTML = '';
+    for(let i = 0; i < numLines; i++) {
+      let offLine = '';
+      for(let k = 0; k < lineOffset - (i+1).toString().length; k++) offLine += '&nbsp;';
+      lines.innerHTML += `<div class='line-num' style='height:${vscl}px;'>${offLine}${i+1}&nbsp;</div>`;
+    }
+
+    let wOff = parseInt((lineOffset+1) * hscl);
+    lines.style = `width:${wOff}px`;
+    code.style = `width:calc(100% - ${wOff}px)`;
+  }
+  
+  let lineOffset;
+  let initOff = (3*hscl);
+
+  lines.innerHTML = `<div class='line-num' style='height:${vscl}px'>&nbsp;1&nbsp;</div>`;
+  lines.style = `width:${initOff}px`;
+  code.style = `width:calc(100% - ${initOff}px)`;
+
+  cursor.style.left = initOff + "px";
   code.addEventListener("click", () => {
     capture.focus();
   })
@@ -137,9 +154,8 @@ function updateCode() {
     let keycode = e.keyCode;
     if(validateKey(keycode)) {
       if(!isArrow(keycode)) {
-        let program = capture.value;
-        lineOffset = program.split('\n').length.toString().length + 1;
-        highlightSyntax(program, lineOffset);
+        setLineNums(capture.value);
+        highlightSyntax(capture.value);
       } 
     }
     followCursor();
@@ -156,7 +172,7 @@ function updateCode() {
         e.target.value = e.target.value.substring(0, start) +
           tabStr + e.target.value.substring(end);
         e.target.selectionStart = e.target.selectionEnd = start + tabStr.length;
-      }
+      } 
       followCursor();
     }
   })
