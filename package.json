@@ -4,7 +4,7 @@
   "description": "a python3 code editor",
   "main": "app.js",
   "scripts": {
-    "build": "browserify src/highlight.js > dist/bundle.js"
+    "build": "browserify src/highlight.js src/render.js --standalone XXX > dist/bundle.js"
   },
   "repository": {
     "type": "git",

@@ -1,4 +1,4 @@
-(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.XXX = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -4586,14 +4586,6 @@ const python = require('@lezer/python');
 const common = require('@lezer/common');
 const parser = python.parser;
 
-const code = document.querySelector("#code");
-const lines = document.querySelector("#lines");
-const capture = document.querySelector("#capture");
-const cursor = document.querySelector("#cursor");
-
-const hscl = 7.83;
-const vscl = 16;
-
 function isAlphaNumeric(str) {
   let ascii, i, len;
   for (i = 0, len = str.length; i < len; i++) {
@@ -4607,11 +4599,11 @@ function isAlphaNumeric(str) {
   return true;
 };
 
-function highlightSyntax(program) {
+function highlightSyntax(program, renderDiv, lineHeight) {
   function createLine() {
     let lDiv = document.createElement("div");
-    lDiv.style = `position:relative; height:${vscl}px;`; 
-    code.appendChild(lDiv);
+    lDiv.style = `position:relative; height:${lineHeight}px;`; 
+    renderDiv.appendChild(lDiv);
     return lDiv;
   }
 
@@ -4660,7 +4652,7 @@ function highlightSyntax(program) {
     lineDiv.appendChild(kwSpan); 
   }
 
-  code.innerHTML = ''; 
+  renderDiv.innerHTML = ''; 
   let treeCursor = parser.parse(program).cursor();
   let lineDiv;
   let prevPoint = 0;
@@ -4675,7 +4667,21 @@ function highlightSyntax(program) {
   }
 }
 
-function updateCode() {
+module.exports = {highlightSyntax};
+
+},{"@lezer/common":2,"@lezer/python":5}],7:[function(require,module,exports){
+const highlight = require('./highlight.js');
+const highlightSyntax = highlight.highlightSyntax;
+
+const hscl = 7.83;
+const vscl = 16;
+
+const code = document.querySelector("#code");
+const lines = document.querySelector("#lines");
+const capture = document.querySelector("#capture");
+const cursor = document.querySelector("#cursor");
+
+function render() {
   function followCursor() {
     let value = capture.value.slice(0, capture.selectionStart); 
     let matches = [...value.matchAll(/\n/g)];
@@ -4738,8 +4744,9 @@ function updateCode() {
     let keycode = e.keyCode;
     if(validateKey(keycode)) {
       if(!isArrow(keycode)) {
-        setLineNums(capture.value);
-        highlightSyntax(capture.value);
+        let val = capture.value;
+        setLineNums(val);
+        highlightSyntax(val, code, vscl);
       } 
     }
     followCursor();
@@ -4762,12 +4769,9 @@ function updateCode() {
   })
 }
 
-updateCode();
+render();
 
 
 
-
-
-
-
-},{"@lezer/common":2,"@lezer/python":5}]},{},[6]);
+},{"./highlight.js":6}]},{},[6,7])(7)
+});
