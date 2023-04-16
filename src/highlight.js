@@ -135,7 +135,7 @@ function updateCode() {
 
     let wOff = parseInt((lineOffset+1) * hscl);
     lines.style = `width:${wOff}px`;
-    code.style = `width:calc(100% - ${wOff}px)`;
+    code.style = `width:calc(100% - ${wOff}px); height:${lines.offsetHeight}px;`;
   }
   
   let lineOffset;
@@ -143,7 +143,7 @@ function updateCode() {
 
   lines.innerHTML = `<div class='line-num' style='height:${vscl}px'>&nbsp;1&nbsp;</div>`;
   lines.style = `width:${initOff}px`;
-  code.style = `width:calc(100% - ${initOff}px)`;
+  code.style.width = `calc(100% - ${initOff}px)`;
 
   cursor.style.left = initOff + "px";
   code.addEventListener("click", () => {
