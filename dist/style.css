@@ -35,11 +35,12 @@ textarea, pre {
 	border-radius:3px;
 	transition:all .25s;
 	width:5px;
+	height:5px;
 }
 
 .pyrate-scroll::-webkit-scrollbar-thumb {
 	background: #005F73;
-	border-radius:3px;
+	border-radius:5px;
 }
 
 .pyrate-scroll>.pyrate-code {
