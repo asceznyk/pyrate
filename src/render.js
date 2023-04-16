@@ -9,7 +9,7 @@ const lines = document.querySelector("#lines");
 const capture = document.querySelector("#capture");
 const cursor = document.querySelector("#cursor");
 
-function render() {
+(function () {
   function followCursor() {
     let value = capture.value.slice(0, capture.selectionStart); 
     let matches = [...value.matchAll(/\n/g)];
@@ -95,8 +95,6 @@ function render() {
       followCursor();
     }
   })
-}
-
-render();
+})();
 
 
