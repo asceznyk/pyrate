@@ -1,10 +1,10 @@
 {
   "name": "pyrate",
   "version": "1.0.0",
-  "description": "a python3 code editor",
-  "main": "app.js",
+  "description": "a very basic python code editor",
+  "main": "index.js",
   "scripts": {
-    "build": "browserify src/highlight.js src/render.js --standalone XXX > dist/bundle.js"
+    "build": "browserify dist/highlight.js dist/render.js --standalone XXX > static/bundle.js"
   },
   "repository": {
     "type": "git",
@@ -17,10 +17,11 @@
   },
   "homepage": "https://github.com/asceznyk/pyrate#readme",
   "dependencies": {
-    "@lezer/python": "^1.1.1",
+    "@lezer/common": "^1.0.3",
     "express": "^4.18.2"
   },
   "devDependencies": {
+    "@lezer/python": "^1.1.8",
     "typescript": "^5.0.4"
   }
 }
