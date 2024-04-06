@@ -1,6 +1,7 @@
 import { parser } from '@lezer/python';
 import { TreeCursor } from '@lezer/common';
 
+
 export function highlightSyntax (
   program:string, 
   renderDiv:HTMLElement, 
@@ -36,7 +37,6 @@ export function highlightSyntax (
 
   function getKWType(node:any, clsname:string, value:string): string {
     cls = clsname.toLowerCase();
-
     if(cls == value) cls = isAlphaNumeric(value) ?  "keyword" : "seperator";
     else if(cls.endsWith("op")) cls = "operator";
     else if( 
@@ -44,7 +44,6 @@ export function highlightSyntax (
       node._parent.type.clsname == 'FunctionDefinition' && 
       clsname == 'VariableName'
     ) cls = "def";
-
     return cls;
   }
 
@@ -52,7 +51,6 @@ export function highlightSyntax (
     let [from, to] = [treeCursor.from, treeCursor.to];
     let kw = getKWType(treeCursor.node, treeCursor.name, program.slice(from, to)) ;
     let kwSpan = document.createElement("span");
-
     kwSpan.classList.add(`py-${kw}`);
     for(let i = from; i < to; i++) {
       if(program[i] == '\n') {
@@ -72,7 +70,6 @@ export function highlightSyntax (
   let lineDiv:HTMLElement;
   let prevPoint:number = 0;
   let cls:string;
-
   lineDiv = createLine();
   while(treeCursor.next()) {
     if(treeCursor.node.firstChild != null) continue;
@@ -80,4 +77,5 @@ export function highlightSyntax (
     fillNodeColor();
     prevPoint = treeCursor.to;
   }
+
 }

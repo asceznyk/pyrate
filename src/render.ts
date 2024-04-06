@@ -10,17 +10,17 @@ const lines = document.querySelector<HTMLElement>("#lines")!;
 const capture = document.querySelector<HTMLInputElement>("#capture")!;
 const cursor = document.querySelector<HTMLElement>("#cursor")!;
 
+
 (function () {
+
   function followCursor() {
     let value = capture.value.slice(0, capture.selectionStart as number); 
     let matches = [...value.matchAll(/\n/g)];
     let cy = matches.length;
-
     let cx = value.length;
     if(cy > 0) { 
       cx = value.slice(matches[cy-1].index, value.length).replace('\n', '').length; 
     }
-
     cursor.setAttribute('style', `top:${cy*vscl}px; left:${(cx+lineOffset+1)*hscl}px`);
   }
 
@@ -43,26 +43,24 @@ const cursor = document.querySelector<HTMLElement>("#cursor")!;
   function setLineNums(program:string) {
     let numLines = program.split('\n').length;
     lineOffset = numLines.toString().length + 1;
-
     lines.innerHTML = '';
     for(let i = 0; i < numLines; i++) {
       let offLine = '';
       for(let k = 0; k < lineOffset - (i+1).toString().length; k++) offLine += '&nbsp;';
       lines.innerHTML += `<div class='line-num' style='height:${vscl}px;'>${offLine}${i+1}&nbsp;</div>`;
     }
-
     let wOff:number = (lineOffset+1)*hscl;
     lines.setAttribute('style', `width:${wOff}px`);
-    code.setAttribute('style', `width:calc(100% - ${wOff}px); height:${lines.offsetHeight}px;`);
+    code.setAttribute(
+      'style', `width:calc(100% - ${wOff}px); height:${lines.offsetHeight}px;`
+    );
   }
 
   let lineOffset:number;
   let initOff:number = 3*hscl;
-
   lines.innerHTML = `<div class='line-num' style='height:${vscl}px'>&nbsp;1&nbsp;</div>`;
   lines.setAttribute('style', `width:${initOff}px`);
   code.setAttribute('style', `width:calc(100% - ${initOff}px)`);
-
   cursor.setAttribute('style',`left:${initOff}px`);
   code.addEventListener("click", () => {
     capture.focus();
@@ -94,6 +92,7 @@ const cursor = document.querySelector<HTMLElement>("#cursor")!;
       followCursor();
     }
   })
+
 })();
 
 
