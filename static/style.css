@@ -1,110 +1,110 @@
 html, body {
-	margin:0px;
-	font-family:monospace;
-	font-size:13px;
-	background: #001219;
-	color: #FFF;
+  margin:0px;
+  font-family:monospace;
+  font-size:13px;
+  background: #001219;
+  color: #FFF;
 }
 
 textarea, pre {
-	-moz-tab-size:2;
-	-o-tab-size:2;
-	tab-size:2;
+  -moz-tab-size:2;
+  -o-tab-size:2;
+  tab-size:2;
 }
 
 .wrapper { 
-	margin:auto;
-	margin-top:5px;
-	max-width:500px;
+  margin:auto;
+  margin-top:5px;
+  max-width:500px;
 }
 
 .wrapper>div {
-	margin-bottom:15px;
+  margin-bottom:15px;
 }
 
 .pyrate-scroll {
-	border:1px solid;
-	max-width:inherit;
-	border-radius:3px;
-	overflow:auto;
-	padding:10px;
+  border:1px solid;
+  max-width:inherit;
+  border-radius:3px;
+  overflow:auto;
+  padding:10px;
 }
 
 .pyrate-scroll::-webkit-scrollbar {
-	background:inherit;
-	border-radius:3px;
-	transition:all .25s;
-	width:5px;
-	height:5px;
+  background:inherit;
+  border-radius:3px;
+  transition:all .25s;
+  width:5px;
+  height:5px;
 }
 
 .pyrate-scroll::-webkit-scrollbar-thumb {
-	background: #005F73;
-	border-radius:5px;
+  background: #005F73;
+  border-radius:5px;
 }
 
 .pyrate-scroll>.pyrate-code {
-	min-height:250px;
-	max-height:500px;
-	float:left;
+  min-height:250px;
+  max-height:500px;
+  float:left;
 }
 
 .pyrate-scroll>.pyrate-lines {
-	min-height:250px;
-	max-height:500px;
-	float:left;
+  min-height:250px;
+  max-height:500px;
+  float:left;
 }
 
 .pyrate-code {  
-	cursor:text;
+  cursor:text;
 }
 
 .pyrate-code span {
-	white-space:pre;
-	display:inline;
-	height:16px;
+  white-space:pre;
+  display:inline;
+  height:16px;
 }
 
 .pyrate-cursors {
-	position:relative;
+  position:relative;
 }
 
 .pyrate-cursor { 
-	height:16px;
-	width:2px;
-	background:#E9D8A6;
-	position:absolute;
-	top:0px;
-	text-decoration:blink;
-	animation: blinker 1s linear infinite;
+  height:16px;
+  width:2px;
+  background:#E9D8A6;
+  position:absolute;
+  top:0px;
+  text-decoration:blink;
+  animation: blinker 1s linear infinite;
 }
 
 .header>h1 {
-	margin:0px;
+  margin:0px;
 }
 
 .py-keyword {
-	color:#0A9396;
+  color:#0A9396;
 }
 
 .py-string, .py-comment {
-	color:#E9D8A6;
+  color:#E9D8A6;
 }
 
 .py-number {
-	color:#005F73;
+  color:#005F73;
 }
 
 .py-operator, .py-def {
-	color:#057985;
+  color:#057985;
 }
 
 .py-propertyname { 
-	color:#94D2BD;
+  color:#94D2BD;
 }
 
 .line-num {
-	color:#00A1E0;
+  color:#00A1E0;
 }
 
 @keyframes blinker {  
@@ -112,12 +112,12 @@ textarea, pre {
 }
 
 @media only screen and (max-width: 600px) {
-	.wrapper {
-		width: 90vw;
-	}
+  .wrapper {
+    width: 90vw;
+  }
 }
 
- 
+
 
 
 
